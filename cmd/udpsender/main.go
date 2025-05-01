@@ -1,9 +1,7 @@
-package udpsender
+package main
 
 import (
 	"bufio"
-	"errors"
-	"io"
 	"log"
 	"net"
 	"os"
@@ -11,7 +9,7 @@ import (
 )
 
 func main (){
-	addr, err := net.ResolveUDPAddr("UDP", ":42069")
+	addr, err := net.ResolveUDPAddr("udp", ":42069")
 
 	if err != nil {
 		log.Fatal(err)
@@ -30,7 +28,7 @@ func main (){
 	for {
 		fmt.Println(">")
 		chunk := make([]byte, 8, 8)
-		i, readErr := reader.Read(chunk)
+		_, readErr := reader.Read(chunk)
 
 		if readErr != nil {
 			formattedErr := fmt.Errorf("%w", readErr)
@@ -38,6 +36,11 @@ func main (){
 		}
 
 
+		_, writeErr := conn.Write(chunk)
+		if writeErr != nil {
+			formattedErr := fmt.Errorf("%w", writeErr)
+			fmt.Println(formattedErr)
+		}
 
 	}
 	
